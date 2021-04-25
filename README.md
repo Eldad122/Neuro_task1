@@ -1,1 +1,1 @@
-# Adaline Learning Algorithm Implementaion
+# Adaline Learning Algorithm Implementation
