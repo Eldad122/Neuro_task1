@@ -253,8 +253,8 @@ if __name__ == '__main__':
     minmax = dataset_minmax(dataset)
     normalize_dataset(dataset, minmax)
     # evaluate algorithm
-    n_folds = 5
-    l_rate = 0.3
+    n_folds = 2
+    l_rate = 0.2
     n_epoch = 500
     n_hidden = 5
     scores = evaluate_algorithm(dataset, back_propagation, n_folds, l_rate, n_epoch, n_hidden)
