@@ -1,10 +1,13 @@
-# Backprop on the Seeds Dataset
 from random import seed
 from random import randrange
 from random import random
 from csv import reader
 from math import exp
 import numpy as np
+import matplotlib.pyplot as plt
+
+from AdalineAlgo import CustomAdaline
+
 
 # Load a CSV file
 def load_csv(filename):
@@ -16,12 +19,6 @@ def load_csv(filename):
                 continue
             dataset.append(row)
     return dataset
-
-
-# Convert string column to float
-def str_column_to_float(dataset, column):
-    for row in dataset:
-        row[column] = float(row[column].strip())
 
 
 # Convert string column to integer
@@ -76,7 +73,7 @@ def accuracy_metric(actual, predicted):
 # Evaluate an algorithm using a cross validation split
 def evaluate_algorithm(dataset, algorithm, n_folds, *args):
     folds = cross_validation_split(dataset, n_folds)
-    print('folds: ', folds)
+    # print('folds: ', folds)
     scores = list()
     for fold in folds:
         train_set = list(folds)
@@ -93,7 +90,22 @@ def evaluate_algorithm(dataset, algorithm, n_folds, *args):
         accuracy = accuracy_metric(actual, predicted)
         scores.append(accuracy)
     print("Training: ", train_set)
-    print('SizeT: ', len(train_set))
+    print("SizeT: ", len(train_set))
+    prediction_plot(test_set, predicted)
+
+    X = [item[:2] for item in train_set]
+    y = [item[2] for item in train_set]
+    X = np.array(X)
+    y = np.array(y)
+    adaline = CustomAdaline(n_iterations=10)
+    #
+    # Fit the model
+    #
+    adaline.fit(X, y)
+    #
+    # Score the model
+    #
+    print(adaline.score(X, y))
     return scores
 
 
@@ -213,15 +225,28 @@ def get_data(size, low, high):
     print('Size: ', len(data))
     return data
 
+
+def prediction_plot(data, predictions, layer=0, neuron=0):
+    data = np.array(data)
+    area1 = np.array(predictions)
+    area2 = np.array(predictions)
+    area1[area1 == 1] = 100
+    area2[area2 == 0] = 100
+    area2[area2 == 1] = 0
+
+    print("type(data):", type(data))
+    plt.scatter(data[:, 0], data[:, 1], s=area1, marker='X', c='Pink')
+    plt.scatter(data[:, 0], data[:, 1], s=area2, marker='X', c='Blue')
+    plt.legend(['classified as 1', 'classified as -1'])
+    title = "layer " + str(layer) + ", neuron " + str(neuron)
+    plt.title(title)
+    plt.show()
+
+
 if __name__ == '__main__':
-    # Test Backprop on Seeds dataset
     seed(1)
     # load and prepare data
     dataset = get_data(size=1000, low=-100, high=100)
-    # filename = 'seeds_dataset.csv'
-    # dataset = load_csv(filename)
-    # for i in range(len(dataset[0]) - 1):
-    #     str_column_to_float(dataset, i)
     # convert class column to integers
     str_column_to_int(dataset, len(dataset[0]) - 1)
     # normalize input variables
