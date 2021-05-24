@@ -98,14 +98,8 @@ def evaluate_algorithm(dataset, algorithm, n_folds, *args):
     X = np.array(X)
     y = np.array(y)
     adaline = CustomAdaline(n_iterations=10)
-    #
-    # Fit the model
-    #
     adaline.fit(X, y)
-    #
-    # Score the model
-    #
-    print(adaline.score(X, y))
+    print("Adaline result: ", adaline.score(X, y))
     return scores
 
 
